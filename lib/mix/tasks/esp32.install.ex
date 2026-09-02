@@ -200,11 +200,15 @@ defmodule Mix.Tasks.Atomvm.Esp32.Install do
       {:error, reason} ->
         raise "Failed to fetch release: #{inspect(reason)}"
 
+      %{status: 404} when is_binary(version) ->
+        Mix.raise("AtomVM release not found: #{inspect(version)}")
+
       %{status: status} ->
         raise "GitHub API returned status #{status}"
 
       nil ->
-        raise "No matching release found for #{chip_family}"
+        release = version || "the latest release"
+        raise "No matching Elixir image found for #{chip_family} in #{release}"
     end
   end
 
